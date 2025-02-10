@@ -1,3 +1,12 @@
-from tx import get_tx
+from command import create_command
+import sys
 
-print(get_tx('B9305C0FD2B2CE76A3FCDCB07468D2024EB216AB0F8FA8AD9D44BD703070D505'))
+
+def show_help():
+    print('usage: scnrp command parameters...')
+
+if len(sys.argv) < 2:
+    show_help()
+else:
+    command = create_command(sys.argv[1:])
+    print(command.run())
