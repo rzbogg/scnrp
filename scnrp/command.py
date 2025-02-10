@@ -1,34 +1,28 @@
-from account import Account, get_account
+from . import account
 
 class AccountCommand:
     def __init__(
         self,
-        account,
+        address,
         params,
     ) -> None:
-        self.account = account
+        self.address = address
         self.params = params
 
     def run(self):
-        account = get_account(self.account)
+        account_data = account.get_account(self.address)
         result = 'balance'
         if not self.params:
-            return self._run_no_params(account)
+            return account_data.summary()
         # return self._run_params(account)
 
     def _run_params(self,account):
         raise NotImplementedError()
 
-    def _run_no_params(self,account):
-        result = ''
-        for key, value in account.fields():
-            result += f'{key.capitalize()}: {value}\n'
-        return result
-
     @classmethod
     def from_args(cls,args):
         return cls(
-            account = args[0],
+            address = args[0],
             params  = [p.removeprefix('--')for p in args[1:]]
         )
 
