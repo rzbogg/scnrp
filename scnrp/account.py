@@ -1,33 +1,55 @@
-from xrpl.models.requests import AccountInfo,AccountTx
-from xrpl.models.response import Response, ResponseStatus
-from api import APIClient
+from xrpl.models.requests import AccountInfo
+from xrpl.models.response import ResponseStatus
+from . import api
+from .transaction import get_account_txs
 
-class Account:
+class AccountData:
     def __init__(
         self,
-        address,
-        data ,
+        address:str,
+        last_tx:str,
+        balance:int,
+        txs = [],
     ) -> None:
         self.address = address
-        self._data = data
+        self.last_tx = last_tx
+        self.balance = balance
+        self.txs = txs
+
+    def _txs_summary(self):
+        result = '#Transactions:\n---------\n'
+        for tx in self.txs:
+            result += f'{tx.direction(self.address)}\n'
+            result += tx.summary()
+            result += '\n---------\n'
+        return result
+
+    def summary(self):
+        return f'''Address: {self.address}
+Balance: {self.balance}
+Last transaction: {self.last_tx}
+{self._txs_summary()}
+'''
+
+    def add_tx(self,tx):
+        self.txs.append(tx)
 
     @classmethod
     def from_json(cls,json):
         return cls(
-            address= json['account_data']['Account'],
-            data = json['account_data']
+            address = json['Account'],
+            balance = json['Balance'],
+            last_tx = json['PreviousTxnID'],
         )
-
-    def __repr__(self) -> str:
-        return f'Account({self.address})'
-
-    def fields(self):
-        return self._data.items()
 
 
 def get_account(account:str):
     req_account = AccountInfo(account=account)
-    res_account = APIClient.request(req_account)
+    res_account = api.APIClient.request(req_account)
     if res_account.status == ResponseStatus.ERROR:
         raise ValueError('unable to get account')
-    return Account.from_json(res_account.result)
+    account_data = AccountData.from_json(res_account.result['account_data'])
+    for tx in get_account_txs(account):
+        account_data.add_tx(tx)
+
+    return account_data
