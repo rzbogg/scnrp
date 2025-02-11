@@ -17,7 +17,7 @@ class AccountData:
         self.txs = txs
 
     def _txs_summary(self):
-        result = '#Transactions:\n---------\n'
+        result = '\n---------\n'
         for tx in self.txs:
             result += f'{tx.direction(self.address)}\n'
             result += tx.summary()
@@ -30,6 +30,18 @@ Balance: {self.balance}
 Last transaction: {self.last_tx}
 {self._txs_summary()}
 '''
+    def flag_summary(self,address,balance,last_tx,txs):
+        result = ''
+        if address:
+            result += f'Address: {self.address}\n'
+        if balance:
+            result += f'Balance: {self.balance}\n'
+        if last_tx:
+            result += f'Last Transaction: {self.last_tx}\n'
+        if txs:
+            result += f'Transactions:{self._txs_summary()}'
+        assert result != ''
+        return result
 
     def add_tx(self,tx):
         self.txs.append(tx)
