@@ -1,36 +1,43 @@
 from . import account
+from .cli import arg_parser, command
 
-class AccountCommand:
+@command('account','shows information about an account')
+class Account:
+    ARGUMENTS = [
+        ( 'account_address',),
+        ('-a ', '--address' , {'action':'store_true'}),
+        ('-b ', '--balance', {'action':'store_true'} ),
+        ('-lt ', '--last-tx', {'action':'store_true'} ),
+        ('-t ', '--txs',{'action':'store_true'} ),
+    ]
+
     def __init__(
         self,
-        address,
-        params,
+        args ,
     ) -> None:
-        self.address = address
-        self.params = params
+        self.args = args
+
+    def _no_flags(self):
+        return (
+            not self.args.balance and not self.args.last_tx and
+            not self.args.txs and not self.args.address
+        )
 
     def run(self):
-        account_data = account.get_account(self.address)
-        result = 'balance'
-        if not self.params:
+        account_data = account.get_account(self.args.account_address)
+        if self._no_flags() :
             return account_data.summary()
-        # return self._run_params(account)
-
-    def _run_params(self,account):
-        raise NotImplementedError()
-
-    @classmethod
-    def from_args(cls,args):
-        return cls(
-            address = args[0],
-            params  = [p.removeprefix('--')for p in args[1:]]
+        return account_data.flag_summary(
+            self.args.address,
+            self.args.balance,
+            self.args.last_tx,
+            self.args.txs,
         )
 
 
 def create_command(args):
-    command_str = args[0]
-    match command_str:
+    match args.command:
         case 'account':
-            return AccountCommand.from_args(args[1:])
+            return Account(args)
         case _:
             raise ValueError('Unknown Command!')
