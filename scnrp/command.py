@@ -1,15 +1,14 @@
 from . import account
-from .cli import arg_parser, command
+from . import cli
 
-@command('account','shows information about an account')
+
+@cli.argument('-a','--address', action='store_true')
+@cli.argument('-b','--balance', action='store_true')
+@cli.argument('-lt','--last-tx', action='store_true')
+@cli.argument('-t','--txs', action='store_true')
+@cli.argument('account_address')
+@cli.command('account','shows information about an account')
 class Account:
-    ARGUMENTS = [
-        ( 'account_address',),
-        ('-a ', '--address' , {'action':'store_true'}),
-        ('-b ', '--balance', {'action':'store_true'} ),
-        ('-lt ', '--last-tx', {'action':'store_true'} ),
-        ('-t ', '--txs',{'action':'store_true'} ),
-    ]
 
     def __init__(
         self,
