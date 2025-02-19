@@ -1,4 +1,4 @@
-from scnrp.command import create_command
+from scnrp.command import run_command
 from scnrp.cli import arg_parser
 import sys
 
@@ -8,7 +8,7 @@ def show_help():
 
 def main():
     args = arg_parser.parse_args()
-    command = create_command(args)
-    print(command.run())
+    command_result = run_command(args)
+    print(command_result)
 
 main()

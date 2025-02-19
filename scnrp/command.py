@@ -1,5 +1,7 @@
-from . import account
+from .account import get_account
 from . import cli
+from .ledger import get_ledger
+from .transaction import get_tx
 
 
 @cli.argument('-a','--address', action='store_true')
@@ -7,36 +9,33 @@ from . import cli
 @cli.argument('-lt','--last-tx', action='store_true')
 @cli.argument('-t','--txs', action='store_true')
 @cli.argument('account_address')
-@cli.command('account','shows information about an account')
-class Account:
+@cli.command('shows information about an account')
+def account(args):
+    account_data = get_account(args.account_address)
+    return account_data.summary()
 
-    def __init__(
-        self,
-        args ,
-    ) -> None:
-        self.args = args
-
-    def _no_flags(self):
-        return (
-            not self.args.balance and not self.args.last_tx and
-            not self.args.txs and not self.args.address
-        )
-
-    def run(self):
-        account_data = account.get_account(self.args.account_address)
-        if self._no_flags() :
-            return account_data.summary()
-        return account_data.flag_summary(
-            self.args.address,
-            self.args.balance,
-            self.args.last_tx,
-            self.args.txs,
-        )
+@cli.argument('ledger_index')
+@cli.command('shows information about a specific ledger')
+def ledger(args):
+    ledger = get_ledger(args.ledger_index)
+    return ledger.summary()
 
 
-def create_command(args):
+@cli.argument('transaction_hash')
+@cli.command('shows information about a specific transaction')
+def transaction(args):
+    hash = args.transaction_hash
+    tx = get_tx(hash)
+    return tx.summary()
+
+
+def run_command(args):
     match args.command:
         case 'account':
-            return Account(args)
+            return account(args)
+        case 'ledger':
+            return ledger(args)
+        case 'transaction':
+            return transaction(args)
         case _:
             raise ValueError('Unknown Command!')
