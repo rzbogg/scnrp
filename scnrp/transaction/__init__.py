@@ -1,11 +1,14 @@
 from xrpl.models.requests import Tx, AccountTx
+
+from .trustset import TrustSetTxData
 from .base import BaseTxData
 from .payment import PaymentTxData
 from ..api import APIClient
 
 def create_tx(json):
     factories = {
-        'Payment': PaymentTxData
+        'Payment': PaymentTxData,
+        'TrustSet': TrustSetTxData
     }
     typ = json['tx_json']['TransactionType']
     return factories.get(typ,BaseTxData).from_json(json)
