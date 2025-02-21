@@ -32,12 +32,11 @@ class BaseTxData:
         return ripple_time_to_datetime(self._date)
 
     def summary(self):
-        return f'''Transaction: {self.hash} Outcome: {self.status}
+        return f'''Transaction: {self.hash}
 Account: {self.account}
 Fee: {self.fee}
 Date: {self.date}
-Ledger Index: {self.ledger_index}
-        '''
+Ledger Index: {self.ledger_index}'''
 
     @classmethod
     def from_json(cls,json):
