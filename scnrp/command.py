@@ -14,10 +14,13 @@ def account(args):
     account_data = get_account(args.account_address)
     return account_data.summary()
 
+@cli.argument('-t','--txs',action='store_true')
 @cli.argument('ledger_index')
 @cli.command('shows information about a specific ledger')
 def ledger(args):
     ledger = get_ledger(args.ledger_index)
+    if args.txs:
+        return ledger.detailed_summary()
     return ledger.summary()
 
 
