@@ -2,6 +2,7 @@ from xrpl.models.requests import Ledger
 from xrpl.models.response import ResponseStatus
 from xrpl.utils.xrp_conversions import drops_to_xrp
 from .api import APIClient
+from scnrp.exception import InvalidLedgerIndexError
 
 
 class LedgerData:
@@ -41,9 +42,10 @@ Total coins: {drops_to_xrp(self.total_coins)}'''
         )
 
 
+
 def get_ledger(ledger_index:int):
     req_ledger = Ledger(ledger_index=ledger_index)
     response = APIClient.request(req_ledger)
     if response.status == ResponseStatus.ERROR:
-        raise ValueError('unable to get ledger')
+        raise InvalidLedgerIndexError()
     return LedgerData.from_json(response.result)

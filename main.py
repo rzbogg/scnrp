@@ -1,14 +1,13 @@
 from scnrp.command import run_command
 from scnrp.cli import arg_parser
-import sys
-
-
-def show_help():
-    print('usage: scnrp command parameters...')
+from scnrp.exception import UserError
 
 def main():
     args = arg_parser.parse_args()
-    command_result = run_command(args)
-    print(command_result)
+    try:
+        command_result = run_command(args)
+        print(command_result)
+    except UserError as e:
+        print(e)
 
 main()

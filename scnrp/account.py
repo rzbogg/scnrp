@@ -4,6 +4,7 @@ from xrpl.utils import drops_to_xrp
 
 from . import api
 from .transaction import get_account_txs
+from scnrp.exception import InvalidAccountAddressError
 
 class AccountData:
     def __init__(
@@ -72,7 +73,7 @@ def get_account(account:str):
     req_account = AccountInfo(account=account)
     res_account = api.APIClient.request(req_account)
     if res_account.status == ResponseStatus.ERROR:
-        raise ValueError('unable to get account')
+        raise InvalidAccountAddressError()
     account_data = AccountData.from_json(res_account.result['account_data'])
     for tx in get_account_txs(account):
         account_data.add_tx(tx)
