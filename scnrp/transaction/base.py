@@ -1,4 +1,3 @@
-from xrpl import account
 from xrpl.utils import ripple_time_to_datetime,drops_to_xrp
 
 class BaseTxData:
@@ -18,8 +17,8 @@ class BaseTxData:
         self._date = date
         self.ledger_index = ledger_index
 
-    def direction(self,account):
-        if account == self.account:
+    def direction(self,other):
+        if other == self.account:
             return 'OUT'
         return "IN"
 
@@ -32,7 +31,8 @@ class BaseTxData:
         return ripple_time_to_datetime(self._date)
 
     def summary(self):
-        return f'''Transaction: {self.hash}
+        return f'''[Base][{self.status}]
+Transaction Hash: {self.hash}
 Account: {self.account}
 Fee: {self.fee}
 Date: {self.date}

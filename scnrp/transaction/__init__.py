@@ -1,7 +1,15 @@
 from xrpl.models.requests import Tx, AccountTx
 from xrpl.models.response import ResponseStatus
 
+from .nft import (
+    NFTTokenCreateOfferTxData,
+    NFTTokenCancelOfferTxData,
+    NFTTokenBurnTxData,
+    NFTTokenAcceptOfferTxData
+)
 
+from .escrow import EscrowCreateTxData
+from .offer import OfferCreateTxData, OfferCancelTxData
 from .account_delete import AccountDeleteTxData
 from .trustset import TrustSetTxData
 from .base import BaseTxData
@@ -13,7 +21,14 @@ def create_tx(json):
     factories = {
         'Payment': PaymentTxData,
         'TrustSet': TrustSetTxData,
-        'AccountDelete': AccountDeleteTxData
+        'AccountDelete': AccountDeleteTxData,
+        'OfferCreate': OfferCreateTxData,
+        'OfferCancel': OfferCancelTxData,
+        'EscrowCreate': EscrowCreateTxData,
+        'NFTokenCreateOffer': NFTTokenCreateOfferTxData,
+        'NFTokenCancelOffer': NFTTokenCancelOfferTxData,
+        'NFTokenBurn': NFTTokenBurnTxData,
+        'NFTokenAcceptOffer': NFTTokenCancelOfferTxData,
     }
     typ = json['tx_json']['TransactionType']
     return factories.get(typ,BaseTxData).from_json(json)

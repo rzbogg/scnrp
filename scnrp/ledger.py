@@ -32,12 +32,14 @@ Ledger hash: {self.hash}
 Parent hash: {self.parent_hash}
 Transactions hash: {self.txs_hash}
 Closed On: {self.closed_on}
+Total Transactions: {len(self.transactions)}
 Total coins: {drops_to_xrp(self.total_coins)}'''
 
     def detailed_summary(self):
+        tx_summary = "\n\n".join(tx.summary() for tx in self.transactions)
         return f'''{self.summary()}
 Transactions:
-{"\n\n".join(tx.summary() for tx in self.transactions)}'''
+{tx_summary}'''
 
     @classmethod
     def from_json(cls,json):
@@ -50,8 +52,6 @@ Transactions:
             total_coins = json['ledger']['total_coins'],
             transactions= [get_tx(hash) for hash in json['ledger']['transactions']]
         )
-
-
 
 def get_ledger(ledger_index:int):
     req_ledger = Ledger(ledger_index=ledger_index,transactions=True)

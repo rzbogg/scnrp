@@ -9,5 +9,8 @@ def main():
         print(command_result)
     except UserError as e:
         print(e)
+    except KeyboardInterrupt:
+        print('interuppted')
 
-main()
+if __name__ == "__main__":
+    main()
